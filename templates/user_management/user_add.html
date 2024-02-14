@@ -1,0 +1,40 @@
+{% extends '../dashboard.html' %}
+
+{% block dashboard_title %}
+<title>
+    {% if admin_user %}
+    Update User
+    {% else %}
+    New Admin User Add
+    {% endif %}
+</title>
+{% endblock dashboard_title %}
+
+{% block dashboard_body %}
+<div>
+    {% if admin_user %}
+    <h1>Update User</h1>
+    {% else %}
+    <h1>New Admin User Add</h1>
+    {% endif %}
+
+    {% if messages %}
+    {% for message in messages %}
+    <p>{{message}}</p>
+    {% endfor %}
+    {% endif %}
+
+    <form method="POST" style="margin: auto; width: 50%;">
+        {% csrf_token %}
+        {{form}}
+
+        <br>
+
+        {% if admin_user %}
+        <button type="submit" class="btn btn-primary">Update</button>
+        {% else %}
+        <button type="submit" class="btn btn-primary">Add New</button>
+        {% endif %}
+    </form>
+</div>
+{% endblock dashboard_body %}

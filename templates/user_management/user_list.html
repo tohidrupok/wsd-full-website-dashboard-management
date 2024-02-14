@@ -1,0 +1,27 @@
+{% extends '../dashboard.html' %}
+
+{% block dashboard_title %}
+<title>User List</title>
+{% endblock dashboard_title %}
+
+{% block dashboard_body %}
+<div>
+    <h1>All User List</h1>
+
+    {% if messages %}
+    {% for message in messages %}
+    <p>{{message}}</p>
+    {% endfor %}
+    {% endif %}
+    
+    {% for user_list in user_list %}
+    <p>
+        ({{user_list.user_type}})
+        {{user_list.name}} | {{user_list.username}} | {{user_list.email}} | 
+        <a href="{% url 'update_user' user_list.id %}">Edit</a>
+        <a href="">Delete</a>
+    </p>
+    {% endfor %}
+    
+</div>
+{% endblock dashboard_body %}
