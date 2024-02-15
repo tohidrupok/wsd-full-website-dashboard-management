@@ -20,8 +20,13 @@
             {% if request.user.is_authenticated %}
             <a href="{% url 'dashboard' %}" class="btn btn-outline-primary">Dashboard</a>
             <a href="{% url 'change_password' %}" class="btn btn-outline-primary">Password Change</a>
+
+            {% if request.user.user_type == 'Admin' %}
             <a href="{% url 'add_user' %}" class="btn btn-outline-secondary">Sub-Admin Add</a>
             <a href="{% url 'user_list' %}" class="btn btn-outline-secondary">User List</a>
+            {% endif %}
+
+
             <a href="{% url 'user_profile' request.user.username %}" class="btn btn-outline-secondary">Profile</a>
             <a href="{% url 'logout' %}" class="btn btn-danger">Logout</a>
             {% else %}
@@ -29,12 +34,6 @@
             {% endif %}
             <a href="{% url 'api_view_point' %}" class="btn btn-danger">API View Poin</a>
         </p>
-
-        {% if messages %}
-        {% for message in messages %}
-        <p>{{message}}</p>
-        {% endfor %}
-        {% endif %}
 
 
 

@@ -25,6 +25,8 @@ class Custom_User(AbstractBaseUser, PermissionsMixin):
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username', 'name']
+    
+    # otp_token = models.CharField(max_length=6, blank=True, null=True)
 
     class Meta:
         ordering = ['-date_joined']

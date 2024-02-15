@@ -23,8 +23,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('admin_account.urls')),
     path('', include('sound_system.urls')),
-    path('', include('user_management.urls')),
-    path('', include('dashboard.urls')),
 ]
 
 if settings.DEBUG:

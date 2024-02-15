@@ -17,9 +17,11 @@
     {% for user_list in user_list %}
     <p>
         ({{user_list.user_type}})
-        {{user_list.name}} | {{user_list.username}} | {{user_list.email}} | 
+        {{user_list.name}} | {{user_list.username}} | {{user_list.email}}
+        
+        | 
         <a href="{% url 'update_user' user_list.id %}">Edit</a>
-        <a href="">Delete</a>
+        <a href="{% url 'user_delete' user_list.id %}">Delete</a>
     </p>
     {% endfor %}
     
