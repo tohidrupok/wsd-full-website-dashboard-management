@@ -1,0 +1,58 @@
+{% extends 'dashboard.html' %}
+
+{% block dashboard_title %}
+<title>API View Poin List</title>
+{% endblock dashboard_title %}
+
+{% block dashboard_body %}
+<div>
+    <h1>API View Poin List</h1>
+
+    {% if messages %}
+    {% for message in messages %}
+    <p>{{message}}</p>
+    {% endfor %}
+    {% endif %}
+    
+    <a href="{% url 'EntrySound_API' %}" target="_blank" class="btn btn-primary">
+        Entry Sound API
+    </a>
+    <br><br>
+    <a href="{% url 'Live_Chat_Talk_Sound_API' %}" target="_blank" class="btn btn-primary">
+        Live Chat Talk Sound
+    </a>
+    <a href="{% url 'Live_Chat_Turned_Off_Sound_API' %}" target="_blank" class="btn btn-primary">
+        Live Chat Turned Off Sound API
+    </a>
+    <a href="{% url 'Live_Chat_Notification_Sound_API' %}" target="_blank" class="btn btn-primary">
+        Live Chat Notification Sound API
+    </a>
+    <a href="{% url 'Live_Call_Ringtone_API' %}" target="_blank" class="btn btn-primary">
+        Live Call Ringtone API
+    </a>
+    <a href="{% url 'User_Cannot_Call_Admin_Sound_API' %}" target="_blank" class="btn btn-primary">
+        User Cannot Call Admin Sound API
+    </a>
+    <br><br>
+    <a href="{% url 'Order_Chat_Notification_Tone_API' %}" target="_blank" class="btn btn-primary">
+        Order Chat Notification Tone API
+    </a>
+    <a href="{% url 'Order_Call_Ringtone_API' %}" target="_blank" class="btn btn-primary">
+        Order Call Ringtone API
+    </a>
+    <br><br>
+    <a href="{% url 'Admin_Chat_Notification_Sound_API' %}" target="_blank" class="btn btn-primary">
+        Admin Chat Notification Sound API
+    </a>
+    <a href="{% url 'Admin_Call_Ringtone_API' %}" target="_blank" class="btn btn-primary">
+        Admin Call Ringtone API
+    </a>
+    <br><br>
+    <a href="{% url 'Sound_API' %}" target="_blank" class="btn btn-primary">
+        Sound API
+    </a>
+
+
+    
+</div>
+{% endblock dashboard_body %}

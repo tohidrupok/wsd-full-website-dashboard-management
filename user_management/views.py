@@ -2,13 +2,16 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .forms import AdminUserAddForm
 from django.contrib import messages
 from admin_account.models import Custom_User
+from django.contrib.auth.decorators import login_required
 import random
 import string
 
+@login_required
 def user_list(request):
     user_list = Custom_User.objects.all()
     return render(request, 'user_management/user_list.html', {'user_list': user_list})
 
+@login_required
 def add_update_user(request, id=None):
     context = {}
     if id is not None:
@@ -26,7 +29,7 @@ def add_update_user(request, id=None):
             if form.is_valid():
                 form.save()
                 messages.success(request, 'User Info Update!')
-                return redirect('user_list')
+                return redirect('user_profile', username=request.user.username)
             else:
                 messages.warning(request, form.errors)
                 return redirect(request.META['HTTP_REFERER'])
@@ -45,3 +48,5 @@ def add_update_user(request, id=None):
                 return redirect(request.META['HTTP_REFERER'])
         
     return render(request, 'user_management/user_add.html', context)
+
+
