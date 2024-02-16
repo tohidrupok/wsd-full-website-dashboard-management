@@ -24,8 +24,6 @@ class AdminUserAddForm(forms.ModelForm):
         }
 
 
-
-
 class ForgetPasswordForm(forms.Form):
     email = forms.EmailField(max_length=150, label='Email Address', widget=forms.EmailInput(attrs={
         'class': 'form-control', 'placeholder': 'Enter Email Address'

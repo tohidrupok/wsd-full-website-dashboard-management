@@ -1,6 +1,23 @@
 from rest_framework import serializers
 from .models import *
 
+class Sound_Serializer(serializers.ModelSerializer):
+    user = serializers.StringRelatedField(source='user.username')
+    entry_sound = serializers.StringRelatedField(source='entry_sound.ringtone.url')
+    live_chat_talk_sound = serializers.StringRelatedField(source='live_chat_talk_sound.ringtone.url')
+    live_chat_turned_off_sound = serializers.StringRelatedField(source='live_chat_turned_off_sound.ringtone.url')
+    live_chat_notification_sound = serializers.StringRelatedField(source='live_chat_notification_sound.ringtone.url')
+    live_call_ringtone = serializers.StringRelatedField(source='live_call_ringtone.ringtone.url')
+    user_cannot_call_admin_sound = serializers.StringRelatedField(source='user_cannot_call_admin_sound.ringtone.url')
+    order_chat_notification_tone = serializers.StringRelatedField(source='order_chat_notification_tone.ringtone.url')
+    order_call_ringtone = serializers.StringRelatedField(source='order_call_ringtone.ringtone.url')
+    admin_chat_notification_sound = serializers.StringRelatedField(source='admin_chat_notification_sound.ringtone.url')
+    admin_call_ringtone = serializers.StringRelatedField(source='admin_call_ringtone.ringtone.url')
+    class Meta:
+        model = Sound
+        fields = '__all__'
+
+
 class EntrySound_Serializer(serializers.ModelSerializer):
     class Meta:
         model = EntrySound
@@ -57,9 +74,6 @@ class Admin_Call_Ringtone_Serializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class Sound_Serializer(serializers.ModelSerializer):
-    class Meta:
-        model = Sound
-        fields = '__all__'
+
 
 

@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import *
 from .models import Custom_User
+from order.models import Order
 from django.contrib.auth import login, logout
 from django.contrib.auth import update_session_auth_hash
 from django.contrib import messages
@@ -9,10 +10,19 @@ from django.conf import settings
 from django.core.mail import send_mail
 import random
 import string
+from django.contrib.auth.models import Group, Permission
+from django.contrib.contenttypes.models import ContentType
 
 # Dashboard Interface Function =====================
-@login_required
+@login_required(login_url='login')
 def dashboard(request):
+    permission = Permission.objects.all()
+    group = Group.objects.all()
+    print('================Permision==============')
+    print(permission)
+    
+    print('================Group==============')
+    print(group)
     return render(request, 'dashboard.html')
 
 
@@ -117,7 +127,6 @@ def change_password(request):
     return render(request, 'admin_account/password_change.html', {'form': form})
 
 
-
 # Dashboard User List Interface Function ===================
 @login_required
 def user_list(request):
@@ -132,6 +141,12 @@ def user_list(request):
 def add_update_user(request, id=None):
     if request.user.user_type != 'Admin':
         return redirect('dashboard')
+    # content_type = ContentType.objects.get_for_model(Order)
+    # group = Group.objects.all()
+    # print(group)
+    # user_permission = Permission.objects.filter(content_type=content_type)
+    # for i in user_permission:
+    #     print(i)
     
     context = {}
     if id is not None:
@@ -158,10 +173,21 @@ def add_update_user(request, id=None):
             form = AdminUserAddForm(request.POST)
             if form.is_valid():
                 user = form.save()
-                result_str = ''.join(random.choice(string.ascii_letters) for i in range(10))
-                print(result_str)
-                user.set_password(result_str)
+                random_password = ''.join(random.choice(string.ascii_letters) for i in range(10))
+                print(random_password)
+                user.set_password(random_password)
                 user.save()
+                
+                subject = 'Congratulations for joined our Dashboard Panel!'
+                message = f'''Dear {user.name},
+                Your Email Address : {user.email}
+                Your Username : {user.username}
+                Your Password is : {user.password}'''
+                from_email = settings.EMAIL_HOST_USER
+                recipient_list=[user.email]
+                
+                send_mail(subject, message, from_email, recipient_list)
+                
                 messages.success(request, 'New User Added!')
                 return redirect('user_list')
             else:

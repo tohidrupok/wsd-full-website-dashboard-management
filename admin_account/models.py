@@ -1,3 +1,4 @@
+from typing import Iterable
 from django.db import models
 from .managers import UserManager
 from django.contrib.auth.models import PermissionsMixin
@@ -9,6 +10,8 @@ class Custom_User(AbstractBaseUser, PermissionsMixin):
         ('Admin', 'Admin'),
         ('Sub-Admin', 'Sub-Admin'),
         ('Staff', 'Staff'),
+        ('Invantory', 'Invantory'),
+        ('RTS', 'RTS'),
     )
     name = models.CharField(max_length=100, blank=True, null=True)
     username = models.CharField(max_length=30, unique=True, validators=[UnicodeUsernameValidator])
@@ -26,11 +29,12 @@ class Custom_User(AbstractBaseUser, PermissionsMixin):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username', 'name']
     
-    # otp_token = models.CharField(max_length=6, blank=True, null=True)
-
     class Meta:
         ordering = ['-date_joined']
     
-    
     def __str__(self) -> str:
         return self.username
+    
+
+    
+

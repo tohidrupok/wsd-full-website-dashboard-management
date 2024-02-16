@@ -101,7 +101,7 @@ class Admin_Call_Ringtone(models.Model):
 
 
 class Sound(models.Model):
-    user = models.ForeignKey(Custom_User, on_delete=models.CASCADE, null=True, blank=True)\
+    user = models.OneToOneField(Custom_User, on_delete=models.CASCADE, null=True, blank=True)
     
     entry_sound = models.ForeignKey(EntrySound, on_delete=models.DO_NOTHING, blank=True, null=True)
     live_chat_talk_sound = models.ForeignKey(Live_Chat_Talk_Sound, on_delete=models.DO_NOTHING, blank=True, null=True)
@@ -117,6 +117,9 @@ class Sound(models.Model):
     admin_call_ringtone = models.ForeignKey(Admin_Call_Ringtone, on_delete=models.DO_NOTHING, blank=True, null=True)
 
     def __str__(self):
-        return f"Sound settings for {self.user} or {self.live_chat_admin} or {self.user_order} or {self.order_admin}"
+        return f"Sound settings for {self.user}"
+
+
+
 
 
