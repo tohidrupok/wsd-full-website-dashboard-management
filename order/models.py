@@ -30,24 +30,10 @@ class Order(models.Model):
         return f'{self.product_title} x {self.quantity}'
 
 
-# class Payment_Type(models.Model):
-#     title = models.CharField()
-
-
-class Payment(models.Model):
-    PAYMENT_TYPE = (
-        ('Online', 'Online'),
-        ('Offline', 'Offline'),
-    )
-    PAYMENT_METHOD = (
-        ('Bank', 'Bank'),
-        ('Moblie Walet', 'Moblie Walet'),
-    )
-    
-    user = models.ForeignKey(Custom_User, on_delete=models.DO_NOTHING, related_name='user_payment', blank=True, null=True) #foreignkey with user or customer
-    bank = models.CharField(max_length=50, blank=True, null=True) #foreignkey with user or customer
-    
-    order_ID = models.OneToOneField(Order, on_delete=models.DO_NOTHING, related_name='order_payment')
+class Bank_Payment(models.Model):
+    user = models.ForeignKey(Custom_User, on_delete=models.DO_NOTHING, related_name='user_bank_payment', blank=True, null=True) #foreignkey with user or customer
+    bank = models.CharField(max_length=50, blank=True, null=True) #foreignkey with bank model
+    order = models.OneToOneField(Order, on_delete=models.DO_NOTHING, blank=True, null=True)
     total_amount = models.DecimalField(max_digits=9, decimal_places=2)
     
     account_holder_name = models.CharField(max_length=100)
@@ -58,7 +44,27 @@ class Payment(models.Model):
     account_info = models.CharField(max_length=100)
     transaction_receipt = models.FileField(upload_to='payment/transaction/', blank=True, null=True)
     
+    def __str__(self) -> str:
+        return f'{self.user.name} | {self.order.id} | {self.bank}'
+
+class Mobile_Banking_Payment(models.Model):
+    user = models.ForeignKey(Custom_User, on_delete=models.DO_NOTHING, related_name='user_mobile_bank_payment', blank=True, null=True) #foreignkey with user or customer
+    mobile_banking = models.CharField(max_length=50, blank=True, null=True) #foreignkey with mobile banking model
+    order = models.OneToOneField(Order, on_delete=models.DO_NOTHING, blank=True, null=True)
+    total_amount = models.DecimalField(max_digits=9, decimal_places=2)
     
+    account_holder_name = models.CharField(max_length=100)
+    account_holder_email = models.EmailField(max_length=100)
+    account_phone_number = models.CharField(max_length=14)
+    transaction_id = models.CharField(max_length=50, unique=True)
+    account_number = models.CharField(max_length=100)
+    account_info = models.CharField(max_length=100)
+    transaction_receipt = models.FileField(upload_to='payment/transaction/', blank=True, null=True)
+    
+    def __str__(self) -> str:
+        return f'{self.user.name} | {self.order.id} | {self.mobile_banking}'
+    
+
 
 
 

@@ -1,5 +1,5 @@
 from django import forms
-from .models import Order
+from .models import *
 
 class Update_Status(forms.Form):
     STATUS = {
@@ -14,6 +14,54 @@ class Update_Status(forms.Form):
     status = forms.CharField(max_length=20, label='Status', widget=forms.Select(
         attrs={'class': 'form-control'}, choices=STATUS
     ))
+
+
+# class Payment_Form(forms.ModelForm):
+#     class Meta:
+#         model = Payment
+#         fields = '__all__'
+#         widgets = {
+#             'user': forms.Select(attrs={
+#                 'class': 'form-control',
+#             }),
+#             'order_ID': forms.Select(attrs={
+#                 'class': 'form-control'
+#             }),
+#             'payment_type': forms.Select(attrs={
+#                 'class': 'form-control'
+#             }),
+#             'payment_method': forms.Select(attrs={
+#                 'class': 'form-control'
+#             }),
+#             'bank': forms.TextInput(attrs={
+#                 'class': 'form-control',
+#             }),
+#             'total_amount': forms.TextInput(attrs={
+#                 'class': 'form-control'
+#             }),
+#             'account_holder_name': forms.TextInput(attrs={
+#                 'class': 'form-control'
+#             }),
+#             'account_holder_email': forms.EmailInput(attrs={
+#                 'class': 'form-control'
+#             }),
+#             'account_phone_number': forms.TextInput(attrs={
+#                 'class': 'form-control'
+#             }),
+#             'transaction_id': forms.TextInput(attrs={
+#                 'class': 'form-control'
+#             }),
+#             'account_number': forms.TextInput(attrs={
+#                 'class': 'form-control'
+#             }),
+#             'account_info': forms.TextInput(attrs={
+#                 'class': 'form-control'
+#             }),
+#             'transaction_receipt': forms.FileInput(attrs={
+#                 'class': 'form-control'
+#             }),
+#         }
+
 
 class Order_Form(forms.ModelForm):
     class Meta:

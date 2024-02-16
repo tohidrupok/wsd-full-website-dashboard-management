@@ -1,9 +1,9 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from .forms import Order_Form
-from .models import Order, Payment
-from rest_framework import generics
-from .serializer import Payment_Serializer
+from .models import *
+from rest_framework import generics, viewsets
+from .serializer import *
 
 
 def order_list(request):
@@ -26,10 +26,13 @@ def view_order(request):
     return render(request, 'order/view_order.html')
 
 
-class PaymentAPI(generics.ListCreateAPIView):
-    queryset = Payment.objects.all()
-    serializer_class = Payment_Serializer
-class PaymentDetailAPI(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Payment.objects.all()
-    serializer_class = Payment_Serializer
+
+
+class BankingAPI(viewsets.ModelViewSet):
+    queryset = Bank_Payment.objects.all()
+    serializer_class = Bank_Payment_Serializer
+
+class MobilelBankingAPI(viewsets.ModelViewSet):
+    queryset = Mobile_Banking_Payment.objects.all()
+    serializer_class = Mobile_Banking_Payment_Serializer
 

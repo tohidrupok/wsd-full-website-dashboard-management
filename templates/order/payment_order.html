@@ -1,0 +1,75 @@
+{% extends '../dashboard.html' %}
+
+{% block dashboard_title %}
+<title>
+    Payment For Order
+</title>
+{% endblock dashboard_title %}
+
+{% block dashboard_body %}
+<div>
+
+    <h1>Payment For Order</h1>
+
+    {% if messages %}
+    {% for message in messages %}
+    <p>{{message}}</p>
+    {% endfor %}
+    {% endif %}
+
+    
+    <form method="POST" style="margin: auto; width: 50%;">
+        {% csrf_token %}
+        <label for="">User</label>
+        {{form.user}}
+
+        
+        <label for="">Order</label>
+        {{form.order_ID}}
+
+        
+        <label for="">Payment Type</label>
+        {{form.payment_type}}
+
+
+        <label for="">Payment Method</label>
+        {{form.payment_method}}
+
+        {% if payment_method == 'Bank' %}
+        <label for="">Bank</label>
+        {{form.bank}}
+
+        <label for="">Total Amount</label>
+        {{form.total_amount}}
+
+        <label for="">Account Holder Name</label>
+        {{form.account_holder_name}}
+
+        <label for="">Account Holder email</label>
+        {{form.account_holder_email}}
+
+        <label for="">Account Phone Number</label>
+        {{form.account_phone_number}}
+        
+        <label for="">Transaction ID</label>
+        {{form.transaction_id}}
+        
+        <label for="">Account Number</label>
+        {{form.account_number}}
+
+        <label for="">Account Info</label>
+        {{form.account_info}}
+
+        <label for="">Transaction Receipt</label>
+        {{form.transaction_receipt}}
+
+        {% endif %}
+
+
+        <br>
+
+        <button type="submit" class="btn btn-primary">Payment For Order</button>
+        
+    </form>
+</div>
+{% endblock dashboard_body %}
