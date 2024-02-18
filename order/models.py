@@ -1,68 +1,116 @@
 from django.db import models
-from admin_account.models import Custom_User
-
-
+from account.models import Custom_User
 
 class Order(models.Model):
-    STATUS = {
+    PIORITY = (
+        ('Normal', 'Normal'),
+        ('Medium', 'Medium'),
+        ('Emergency', 'Emergency'),
+    )
+    STATUS = (
         ('Pending', 'Pending'),
         ('Payment', 'Payment'),
         ('Waiting', 'Waiting'),
         ('Working', 'Working'),
-        ('Complete', 'Complete'),
-        ('Delivery', 'Delivery'),
+        ('Complited', 'Complited'),
         ('Cancel', 'Cancel'),
-    }
-    product_title = models.CharField(max_length=500)
-    product_price = models.DecimalField(decimal_places=2, max_digits=6)
-    quantity = models.PositiveIntegerField(default=1)
-    status = models.CharField(choices=STATUS, max_length=20, default='Pending')
-    total_price = models.DecimalField(decimal_places=2, max_digits=6, blank=True, null=True)
+    )
+    CURRENCY = (
+        ('USD', 'USD'),
+        ('BDT', 'BDT'),
+        ('INR', 'INR'),
+        ('EUR', 'EUR'),
+        ('GBP', 'GBP'),
+        ('CAD', 'CAD'),
+    )
+    user = models.ForeignKey(Custom_User, on_delete=models.CASCADE, related_name='order')
+    project_name = models.CharField(max_length=300)
+    project_file = models.FileField(upload_to='static/project-file/', blank=True, null=True)
+    related_file = models.FileField(upload_to='static/project-file/', blank=True, null=True)
     
-    order_date = models.DateTimeField(auto_now_add=True)
-    update_date = models.DateTimeField(auto_now=True)
+    status = models.CharField(max_length=40, choices=STATUS)
+    piority = models.CharField(max_length=40, choices=PIORITY)
+    currency = models.CharField(max_length=20, blank=True, null=True, choices=CURRENCY)
+    
+    total_amount = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    total_online_deposite = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    total_offline_deposite = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    total_amount_paid = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    total_amount_remain = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    profit_amount = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    
+    delivery_date = models.DateField(blank=True, null=True)
+    created_date = models.DateTimeField(auto_now_add=True)
+    updated_date = models.DateTimeField(auto_now=True)
     
     def save(self, *args, **kwargs):
-        self.total_price = self.product_price * self.quantity
+        if not self.total_amount:
+            self.total_amount = 0
+        if not self.total_online_deposite:
+            self.total_online_deposite = 0
+        if not self.total_offline_deposite:
+            self.total_offline_deposite = 0
+        if not self.profit_amount:
+            self.profit_amount = 0
+        
+        self.total_amount_paid = self.total_offline_deposite + self.total_online_deposite
+        self.total_amount_remain = self.total_amount - self.total_amount_paid
+        
         super(Order, self).save(*args, **kwargs)
+
+    
+    class Meta:
+        ordering = ['updated_date', 'created_date', 'delivery_date']
     
     def __str__(self) -> str:
-        return f'{self.product_title} x {self.quantity}'
-
-
-class Bank_Payment(models.Model):
-    user = models.ForeignKey(Custom_User, on_delete=models.DO_NOTHING, related_name='user_bank_payment', blank=True, null=True) #foreignkey with user or customer
-    bank = models.CharField(max_length=50, blank=True, null=True) #foreignkey with bank model
-    order = models.OneToOneField(Order, on_delete=models.DO_NOTHING, blank=True, null=True)
-    total_amount = models.DecimalField(max_digits=9, decimal_places=2)
+        return f'{self.user.name} - {self.project_name}'
     
-    account_holder_name = models.CharField(max_length=100)
-    account_holder_email = models.EmailField(max_length=100)
-    account_phone_number = models.CharField(max_length=14)
-    transaction_id = models.CharField(max_length=50, unique=True)
-    account_number = models.CharField(max_length=100)
-    account_info = models.CharField(max_length=100)
-    transaction_receipt = models.FileField(upload_to='payment/transaction/', blank=True, null=True)
+    
+
+
+class Order_Work_Document(models.Model):
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='order_work_document')
+    text_box = models.TextField(blank=True, null=True)
+    image = models.ImageField(upload_to='static/work-update/', blank=True, null=True)
+    files = models.FileField(upload_to='static/work-update/', blank=True, null=True)
+    
+    created_date = models.DateTimeField(auto_now_add=True)
+    updated_date = models.DateTimeField(auto_now=True)
     
     def __str__(self) -> str:
-        return f'{self.user.name} | {self.order.id} | {self.bank}'
+        return f'{self.order} {self.text_box}'
 
-class Mobile_Banking_Payment(models.Model):
-    user = models.ForeignKey(Custom_User, on_delete=models.DO_NOTHING, related_name='user_mobile_bank_payment', blank=True, null=True) #foreignkey with user or customer
-    mobile_banking = models.CharField(max_length=50, blank=True, null=True) #foreignkey with mobile banking model
-    order = models.OneToOneField(Order, on_delete=models.DO_NOTHING, blank=True, null=True)
-    total_amount = models.DecimalField(max_digits=9, decimal_places=2)
+
+class OrderAdminNote(models.Model):
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='order_note')
+    text_box = models.TextField(blank=True, null=True)
+    file_or_image = models.FileField(upload_to='static/note-file/', blank=True, null=True)
     
-    account_holder_name = models.CharField(max_length=100)
-    account_holder_email = models.EmailField(max_length=100)
-    account_phone_number = models.CharField(max_length=14)
-    transaction_id = models.CharField(max_length=50, unique=True)
-    account_number = models.CharField(max_length=100)
-    account_info = models.CharField(max_length=100)
-    transaction_receipt = models.FileField(upload_to='payment/transaction/', blank=True, null=True)
+    created_date = models.DateTimeField(auto_now_add=True)
+    updated_date = models.DateTimeField(auto_now=True)
     
     def __str__(self) -> str:
-        return f'{self.user.name} | {self.order.id} | {self.mobile_banking}'
+        return f'{self.order} | {self.text_box}'
+
+
+class Order_Update_Box(models.Model):
+    order = models.OneToOneField(Order, on_delete=models.CASCADE, related_name='order_update')
+    content = models.TextField(blank=True, null=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    image = models.ImageField(upload_to='static/message_images/', blank=True, null=True)
+    
+    seen = models.BooleanField(default=False)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Order: {self.order}"
+
+    class Meta:
+        ordering = ('timestamp',)
+
+
+    
+    
     
 
 

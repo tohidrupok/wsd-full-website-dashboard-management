@@ -1,15 +1,13 @@
 from django.urls import path, include
-from rest_framework.routers import DefaultRouter
 from .views import *
+from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
-router.register('banking', BankingAPI, basename='banking')
-router.register('mobile-banking/', MobilelBankingAPI, basename='mobile-banking')
+router.register('list', OrderAPI)
+router.register('order-work-document', Order_Work_DocumentAPI)
+router.register('order-admin-note', OrderAdminNoteAPI)
+router.register('order-update-box', Order_Update_BoxAPI)
 
 urlpatterns = [
-    path('list/', order_list, name='order_list'),
-    path('add-new-order/', add_new_order, name='add_new_order'),
-    path('view-order/', view_order, name='view_order'),
-    
     path('', include(router.urls)),
 ]

@@ -1,8 +1,0 @@
-superadmin
-email: admin@gmail.com
-password: Samim@Password
-
-subadmin
-email: samim.o.sabuj01@gmail.com
-password: ERvObBYYBw
-

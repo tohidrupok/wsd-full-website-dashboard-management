@@ -1,0 +1,27 @@
+{% extends '../dashboard.html' %}
+
+{% block dashboard_title %}
+<title>Registration</title>
+{% endblock dashboard_title %}
+
+{% block dashboard_body %}
+<div>
+    <h1>Registration</h1>
+
+    {% if messages %}
+    {% for message in messages %}
+    <p>{{message}}</p>
+    {% endfor %}
+    {% endif %}
+
+    <form method="POST" style="margin: auto; width: 50%;">
+        {% csrf_token %}
+        {{form}}
+        <br>
+        <button type="submit" class="btn btn-primary">Registration</button>
+
+        <br>
+        <a href="{% url 'forget_password' %}">Forget Passowrd!</a>
+    </form>
+</div>
+{% endblock dashboard_body %}
