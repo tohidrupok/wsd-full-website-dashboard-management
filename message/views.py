@@ -13,4 +13,3 @@ class MessageAPI(viewsets.ModelViewSet):
     queryset = Messages.objects.all()
     serializer_class = MessageSerializer
 
-

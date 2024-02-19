@@ -1,5 +1,6 @@
 from django.db import models
 from account.models import Custom_User
+from django.utils import timezone
 
 class Order(models.Model):
     PIORITY = (
@@ -25,8 +26,8 @@ class Order(models.Model):
     )
     user = models.ForeignKey(Custom_User, on_delete=models.CASCADE, related_name='order')
     project_name = models.CharField(max_length=300)
-    project_file = models.FileField(upload_to='static/project-file/', blank=True, null=True)
-    related_file = models.FileField(upload_to='static/project-file/', blank=True, null=True)
+    project_file = models.FileField(upload_to='order/project-file/', blank=True, null=True)
+    related_file = models.FileField(upload_to='order/related-file/', blank=True, null=True)
     
     status = models.CharField(max_length=40, choices=STATUS)
     piority = models.CharField(max_length=40, choices=PIORITY)
@@ -71,8 +72,8 @@ class Order(models.Model):
 class Order_Work_Document(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='order_work_document')
     text_box = models.TextField(blank=True, null=True)
-    image = models.ImageField(upload_to='static/work-update/', blank=True, null=True)
-    files = models.FileField(upload_to='static/work-update/', blank=True, null=True)
+    image = models.ImageField(upload_to='order/work-update/', blank=True, null=True)
+    files = models.FileField(upload_to='order/work-update/', blank=True, null=True)
     
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
@@ -84,7 +85,7 @@ class Order_Work_Document(models.Model):
 class OrderAdminNote(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='order_note')
     text_box = models.TextField(blank=True, null=True)
-    file_or_image = models.FileField(upload_to='static/note-file/', blank=True, null=True)
+    file_or_image = models.FileField(upload_to='order/note-file/', blank=True, null=True)
     
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
@@ -96,23 +97,16 @@ class OrderAdminNote(models.Model):
 class Order_Update_Box(models.Model):
     order = models.OneToOneField(Order, on_delete=models.CASCADE, related_name='order_update')
     content = models.TextField(blank=True, null=True)
-    timestamp = models.DateTimeField(auto_now_add=True)
-    image = models.ImageField(upload_to='static/message_images/', blank=True, null=True)
+    time = models.TimeField(auto_now_add=True, blank=True, null=True)
     
     seen = models.BooleanField(default=False)
-    timestamp = models.DateTimeField(auto_now_add=True)
+    timestamp = models.DateTimeField(default=timezone.now, blank=True)
 
     def __str__(self):
         return f"Order: {self.order}"
 
     class Meta:
         ordering = ('timestamp',)
-
-
-    
-    
-    
-
 
 
 

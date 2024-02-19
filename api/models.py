@@ -2,7 +2,7 @@ from django.db import models
 
 
 class WebsiteLogo(models.Model):
-    image = models.ImageField(upload_to='static/image/logo/',blank=True, null=True)
+    image = models.ImageField(upload_to='image/logo/',blank=True, null=True)
     description = models.TextField(blank=True, null=True)
 
     def __str__(self):
@@ -11,7 +11,7 @@ class WebsiteLogo(models.Model):
 class WebsiteBanner(models.Model):
     header_text = models.CharField(max_length=100)
     tag_text = models.CharField(max_length=100)
-    image_and_video = models.FileField(upload_to='static/image/banners/', blank=True, null=True)
+    image_and_video = models.FileField(upload_to='image/banners/', blank=True, null=True)
 
     def __str__(self):
         return f"{self.header_text} - {self.tag_text}"
@@ -22,7 +22,7 @@ class WebsiteBanner(models.Model):
 
 
 class CardHomepageTwoOne(models.Model):
-    icon = models.ImageField(upload_to='static/image/icons/', blank=True, null=True)
+    icon = models.ImageField(upload_to='image/icons/', blank=True, null=True)
     title = models.CharField(max_length=100)
     tag_text = models.CharField(max_length=100)
     description = models.TextField()
@@ -32,7 +32,7 @@ class CardHomepageTwoOne(models.Model):
     
 
 class CardHomepageTwo(models.Model):
-    icon = models.ImageField(upload_to='static/image/icons/', blank=True, null=True)
+    icon = models.ImageField(upload_to='image/icons/', blank=True, null=True)
     title = models.CharField(max_length=100)
     tag_text = models.CharField(max_length=100)
     description = models.TextField()
@@ -42,7 +42,7 @@ class CardHomepageTwo(models.Model):
     
 
 class CardHomepageThreeOne(models.Model):
-    icon = models.ImageField(upload_to='static/three/image/icons/', blank=True, null=True)
+    icon = models.ImageField(upload_to='three/image/icons/', blank=True, null=True)
     title = models.CharField(max_length=100)
     tag_text = models.CharField(max_length=100)
     description = models.TextField()
@@ -52,7 +52,7 @@ class CardHomepageThreeOne(models.Model):
 
 
 class CardHomepageThreeTwo(models.Model):
-    icon = models.ImageField(upload_to='static/three/image/icons/', blank=True, null=True)
+    icon = models.ImageField(upload_to='three/image/icons/', blank=True, null=True)
     title = models.CharField(max_length=100)
     tag_text = models.CharField(max_length=100)
     description = models.TextField()
@@ -62,7 +62,7 @@ class CardHomepageThreeTwo(models.Model):
 
 
 class CardHomepageThree(models.Model):
-    icon = models.ImageField(upload_to='static/three/image/icons/', blank=True, null=True)
+    icon = models.ImageField(upload_to='three/image/icons/', blank=True, null=True)
     title = models.CharField(max_length=100)
     tag_text = models.CharField(max_length=100)
     description = models.TextField()
@@ -72,7 +72,7 @@ class CardHomepageThree(models.Model):
  
 
 class CardHomepageFourOne(models.Model):
-    icon = models.ImageField(upload_to='static/image/icons/', blank=True, null=True)
+    icon = models.ImageField(upload_to='image/icons/', blank=True, null=True)
     title = models.CharField(max_length=100)
     tag_text = models.CharField(max_length=100)
     description = models.TextField()
@@ -82,7 +82,7 @@ class CardHomepageFourOne(models.Model):
 
 
 class CardHomepageFourTwo(models.Model):
-    icon = models.ImageField(upload_to='static/image/icons/', blank=True, null=True)
+    icon = models.ImageField(upload_to='image/icons/', blank=True, null=True)
     title = models.CharField(max_length=100)
     tag_text = models.CharField(max_length=100)
     description = models.TextField()
@@ -92,7 +92,7 @@ class CardHomepageFourTwo(models.Model):
 
 
 class CardHomepageFourThree(models.Model):
-    icon = models.ImageField(upload_to='static/image/icons/', blank=True, null=True)
+    icon = models.ImageField(upload_to='image/icons/', blank=True, null=True)
     title = models.CharField(max_length=100)
     tag_text = models.CharField(max_length=100)
     description = models.TextField()
@@ -102,7 +102,7 @@ class CardHomepageFourThree(models.Model):
 
 
 class CardHomepageFour(models.Model):
-    icon = models.ImageField(upload_to='static/image/icons/', blank=True, null=True)
+    icon = models.ImageField(upload_to='image/icons/', blank=True, null=True)
     title = models.CharField(max_length=100)
     tag_text = models.CharField(max_length=100)
     description = models.TextField()
@@ -114,7 +114,7 @@ class CardHomepageFour(models.Model):
 
 
 class CardTemplate(models.Model):
-    image = models.ImageField(upload_to='static/image/card_images/', blank=True, null=True)
+    image = models.ImageField(upload_to='image/card_images/', blank=True, null=True)
     title = models.CharField(max_length=100)
     tag = models.CharField(max_length=100)
     price = models.DecimalField(max_digits=10, decimal_places=5)
@@ -125,7 +125,7 @@ class CardTemplate(models.Model):
 
 
 class BlogCard(models.Model):
-    image = models.ImageField(upload_to='static/image/blog_images/',blank=True, null=True)
+    image = models.ImageField(upload_to='image/blog_images/',blank=True, null=True)
     title = models.CharField(max_length=100)
     tag = models.CharField(max_length=100)
     description = models.TextField()
@@ -150,8 +150,8 @@ class TimeData(models.Model):
 
 class Bank(models.Model):
     name = models.CharField(max_length=100)
-    icon = models.ImageField(upload_to='static/image/bank_icons/')
-    qr_code = models.ImageField(upload_to='static/image/bank_qr_codes/')
+    icon = models.ImageField(upload_to='image/bank_icons/')
+    qr_code = models.ImageField(upload_to='image/bank_qr_codes/')
     account_details = models.TextField()
     active = models.BooleanField(default=True)
 
@@ -160,8 +160,8 @@ class Bank(models.Model):
 
 class MobileWallet(models.Model):
     name = models.CharField(max_length=100)
-    icon = models.ImageField(upload_to='static/image/mobile_wallet_icons/')
-    qr_code = models.ImageField(upload_to='static/image/mobile_wallet_qr_codes/')
+    icon = models.ImageField(upload_to='image/mobile_wallet_icons/')
+    qr_code = models.ImageField(upload_to='image/mobile_wallet_qr_codes/')
     account_details = models.TextField()
     active = models.BooleanField(default=True)
 
@@ -189,7 +189,7 @@ class OfflineBank(models.Model):
 
 
 class Homepage_Segment(models.Model):
-    photo_or_video = models.FileField(upload_to='static/image/segment/', blank=True, null=True)
+    photo_or_video = models.FileField(upload_to='image/segment/', blank=True, null=True)
     description = models.TextField(blank=True, null=True)
     
     def __str__(self) -> str:
@@ -198,7 +198,7 @@ class Homepage_Segment(models.Model):
 
 
 class Support_Company_Logo(models.Model):
-    logo = models.ImageField(upload_to='static/image/comapny-logo/', blank=True, null=True)
+    logo = models.ImageField(upload_to='image/comapny-logo/', blank=True, null=True)
     description = models.TextField(blank=True, null=True)
     
     def __str__(self) -> str:
@@ -225,14 +225,14 @@ class Office_Address_2(models.Model):
 
 
 class Payment_Logo(models.Model):
-    logo = models.ImageField(upload_to='static/image/payment-logo/', blank=True, null=True)
+    logo = models.ImageField(upload_to='image/payment-logo/', blank=True, null=True)
     description = models.TextField(blank=True, null=True)
 
     def __str__(self) -> str:
         return self.logo.name
 
 class Social_Media(models.Model):
-    icon = models.ImageField(upload_to='static/image/socialmedia-icon/', blank=True, null=True)
+    icon = models.ImageField(upload_to='image/socialmedia-icon/', blank=True, null=True)
     url = models.URLField(max_length=500)
     description = models.TextField(blank=True, null=True)
 
@@ -241,7 +241,7 @@ class Social_Media(models.Model):
 
 
 class Global_Location(models.Model):
-    flag_logo = models.ImageField(upload_to='static/image/global-location-flag/', blank=True, null=True)
+    flag_logo = models.ImageField(upload_to='image/global-location-flag/', blank=True, null=True)
     country_name = models.CharField(max_length=30)
     office_address = models.CharField(max_length=400)
     contact_details = models.CharField(max_length=400)
@@ -334,7 +334,7 @@ class Technology(models.Model):
 
 class Technology_Icon(models.Model):
     technology = models.ForeignKey(Technology, on_delete=models.CASCADE, blank=True, null=True)
-    icon = models.ImageField(upload_to='static/image/technology-icons/', blank=True, null=True)
+    icon = models.ImageField(upload_to='image/technology-icons/', blank=True, null=True)
     
     def __str__(self) -> str:
         return f'{self.technology.name} - {self.icon.name}'
@@ -343,7 +343,7 @@ class Technology_Icon(models.Model):
 
 # ===========================Services Start=================================
 class Our_Services(models.Model):
-    icon = models.ImageField(upload_to='static/image/services-icons/', blank=True, null=True)
+    icon = models.ImageField(upload_to='image/services-icons/', blank=True, null=True)
     title = models.CharField(max_length=500)
     tags = models.TextField(blank=True, null=True)
     description = models.TextField(blank=True, null=True)
@@ -358,7 +358,7 @@ class Notice_Board(models.Model):
     title = models.CharField(max_length=500)
     date = models.DateField()
     status = models.CharField(max_length=50)
-    file = models.FileField(upload_to='static/image/notice-board/', blank=True, null=True)
+    file = models.FileField(upload_to='image/notice-board/', blank=True, null=True)
     
     def __str__(self) -> str:
         return f'{self.date} - {self.title}'
@@ -368,8 +368,8 @@ class Notice_Board(models.Model):
 # ===========================Order Card Start=================================
 class Order_Card(models.Model):
     title = models.CharField(max_length=500)
-    image = models.ImageField(upload_to='static/image/order-card/', blank=True, null=True)
-    file = models.FileField(upload_to='static/image/order-card/', blank=True, null=True)
+    image = models.ImageField(upload_to='image/order-card/', blank=True, null=True)
+    file = models.FileField(upload_to='image/order-card/', blank=True, null=True)
     
     def __str__(self) -> str:
         return self.title
@@ -385,7 +385,7 @@ class Security_Page(models.Model):
 
 # ===========================Company Member Start=================================
 class Company_Member(models.Model):
-    image = models.ImageField(upload_to='static/image/company-member/', blank=True, null=True)
+    image = models.ImageField(upload_to='image/company-member/', blank=True, null=True)
     name = models.CharField(max_length=50)
     title = models.CharField(max_length=200)
     email = models.EmailField(max_length=150)
