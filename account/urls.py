@@ -1,15 +1,12 @@
 from django.urls import path, include
 from .views import *
-from rest_framework.routers import DefaultRouter
-
-router = DefaultRouter()
-router.register('creation', UserCreationAPI)
-# router.register(r'your-model', YourModelViewSet)
 
 urlpatterns = [
-    path('user-list/', include(router.urls)),
-    
     path('user/', api_root, name='api-root'),
+    
+    # User List And Create Api Url====================================
+    path('user-list/', UserCreationAPI.as_view(), name='user-list'),
+    path('user-list/<int:pk>/', UserUpdateDeleteAPI.as_view(), name='user'),
     
     # User Login Api Url====================================
     path('user/login/', api_login, name='api-login'),
@@ -21,9 +18,6 @@ urlpatterns = [
     
     # User Change Password Api Url====================================
     path('user/change-password/', ChangePasswordAPIView.as_view(), name='change-password-api'),
-    
-    
-    
     
     
     path('dashboard/', dashboard, name='dashboard'),

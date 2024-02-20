@@ -7,7 +7,7 @@ from django.contrib.auth import authenticate, login
 from rest_framework.decorators import api_view
 from django.contrib.auth import login, logout
 from rest_framework.response import Response
-from rest_framework import viewsets, status
+from rest_framework import status, generics
 from rest_framework.reverse import reverse
 from rest_framework.views import APIView
 from django.core.mail import send_mail
@@ -22,6 +22,7 @@ import random
 @api_view(['GET'])
 def api_root(request, format=None):
     return Response({
+        'User List': reverse('user-list', request=request, format=format),
         'login': reverse('api-login', request=request, format=format),
         'login_otp_verification': reverse('api-login-otp-verify', request=request, format=format),
         
@@ -32,7 +33,7 @@ def api_root(request, format=None):
     })
 
 
-class UserCreationAPI(viewsets.ModelViewSet):
+class UserCreationAPI(generics.ListCreateAPIView):
     queryset = Custom_User.objects.all()
     serializer_class = UserCreationSerializer
     
@@ -41,6 +42,17 @@ class UserCreationAPI(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+class UserUpdateDeleteAPI(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Custom_User.objects.all()
+    serializer_class = UserCreationSerializer
+    
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
 
 
 
@@ -137,6 +149,8 @@ class ChangePasswordAPIView(APIView):
         else:
             return Response({'error': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 # ==========Password Change API Views End==========
+
+
 
 
 

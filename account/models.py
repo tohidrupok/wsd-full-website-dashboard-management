@@ -12,7 +12,6 @@ class Custom_User(AbstractBaseUser, PermissionsMixin):
     USER_TYPE = (
         ('Admin', 'Admin'),
         ('Sub-Admin', 'Sub-Admin'),
-        ('Staff', 'Staff'),
     )
     name = models.CharField(max_length=100, blank=True, null=True)
     username = models.CharField(max_length=30, unique=True, validators=[UnicodeUsernameValidator])
