@@ -21,6 +21,17 @@ order_router.register(r'civil_mobile_payments', CivilMobilePaymentViewSet)
 # Civil Order Payment urls Section End
 # ==================================================
 
+
+# ==================================================
+# Civil Order Refund urls Section Start
+# ==================================================
+order_router.register(r'civil-refunds', CivilRefundViewSet)
+order_router.register(r'civil-bank-refunds', CivilBankRefundViewSet)
+order_router.register(r'civil-mobile-refunds', CivilMobileRefundViewSet)
+# ==================================================
+# Civil Order Refund urls Section End
+# ==================================================
+
 urlpatterns = [
     path('order/', include(order_router.urls)),
 ]

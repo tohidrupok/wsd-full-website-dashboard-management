@@ -108,7 +108,6 @@ class Civil_Order_Update_Box(models.Model):
         ordering = ('timestamp',)
 
 
-
 class Civil_Order_User_Information(models.Model):
     order = models.OneToOneField(Civil_Order, on_delete=models.CASCADE, related_name='civil_order_user_information')
     name = models.CharField(max_length=255)
@@ -156,15 +155,20 @@ class Civil_Order_Product(models.Model):
 # Civil Order Payment Section Start
 # ==================================================
 class Civil_Payment(models.Model):
-    order = models.ForeignKey(Civil_Order, on_delete=models.CASCADE, related_name='civil_order_payment')
+    order = models.ForeignKey(Civil_Order, on_delete=models.DO_NOTHING, related_name='civil_order_payment', blank=True, null=True)
     
     currency = models.CharField(max_length=3, choices=(('USD', 'USD'), ('BDT', 'BDT')))
     payment_amount = models.DecimalField(max_digits=12, decimal_places=2)
-    payment_type = models.CharField(max_length=10, choices=(('Online', 'Online'), ('Offline', 'Offline')))
-    payment_method = models.CharField(max_length=10, choices=(('bank', 'Bank'), ('mobile', 'Mobile')))
+    payment_type = models.CharField(max_length=10, choices=(('Online', 'Online'), ('Offline', 'Offline')), blank=True, null=True)
+    payment_method = models.CharField(max_length=10, choices=(('bank', 'Bank'), ('mobile', 'Mobile')), blank=True, null=True)
+    is_varified = models.BooleanField(default=True)
+    is_refund = models.BooleanField(default=True)
     
     bank = models.ForeignKey(Civil_Bank, on_delete=models.DO_NOTHING, related_name='civil_bank')
     mobile_wallet = models.ForeignKey(Civil_MobileWallet, on_delete=models.DO_NOTHING, related_name='civil_mobile_wallet')
+    
+    created_date = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+    update_date = models.DateTimeField(auto_now=True, blank=True, null=True)
     
     def __str__(self) -> str:
         return f'{self.order.project_name} - {self.pk}'
@@ -203,10 +207,67 @@ class Civil_MobilePayment(models.Model):
     
     def __str__(self) -> str:
         return f'{self.payment.order.project_name} - {self.pk}'
+
 # ==================================================
 # Civil Order Payment Section End
 # ==================================================
 
+
+# ==================================================
+# Civil Order Refund Section Start
+# ==================================================
+class Civil_Refund(models.Model):
+    order = models.ForeignKey(Civil_Order, on_delete=models.DO_NOTHING, blank=True, null=True)
+    payment = models.OneToOneField(Civil_Payment, on_delete=models.CASCADE)
+    reason = models.TextField()
+    proof_of_payment = models.FileField(upload_to='civil/image/refund_proofs/')
+    
+    email = models.EmailField()
+    phone_number = models.CharField(max_length=20)
+    
+    preferred_contact_method = models.CharField(max_length=20, blank=True, null=True)
+    additional_notes = models.TextField(blank=True, null=True)
+    special_instructions = models.TextField(blank=True, null=True)
+    feedback_or_suggestions = models.TextField(blank=True, null=True)
+    documentation_or_evidence = models.FileField(upload_to='civil/image/refund_documents/', blank=True, null=True)
+    specific_issue_details = models.TextField(blank=True, null=True)
+    additional_comments = models.TextField(blank=True, null=True)
+    
+    created_date = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+    update_date = models.DateTimeField(auto_now=True, blank=True, null=True)
+    
+    def __str__(self) -> str:
+        return f'{self.order.pk} | {self.payment.pk} | {self.email}'
+
+class Civil_Bank_Refund(models.Model):
+    refund = models.OneToOneField(Civil_Refund, on_delete=models.CASCADE)
+    currency = models.CharField(max_length=10)
+    refund_method = models.CharField(max_length=50)
+    recipient_bank_name = models.CharField(max_length=100)
+    recipient_bank_account_name = models.CharField(max_length=100)
+    recipient_bank_routing_name = models.CharField(max_length=100)
+    iban_code = models.CharField(max_length=100)
+    account_info = models.TextField()
+    additional_info = models.TextField()
+    
+    def __str__(self) -> str:
+        return f'{self.refund.pk} | {self.recipient_bank_name}'
+
+class Civil_Mobile_Refund(models.Model):
+    refund = models.OneToOneField(Civil_Refund, on_delete=models.CASCADE)
+    currency = models.CharField(max_length=10)
+    refund_method = models.CharField(max_length=50)
+    recipient_mobile_wallet_name = models.CharField(max_length=100)
+    recipient_wallet_account_name = models.CharField(max_length=100)
+    account_info = models.TextField()
+    additional_info = models.TextField()
+    
+    def __str__(self) -> str:
+        return f'{self.refund.pk} | {self.recipient_mobile_wallet_name}'
+
+# ==================================================
+# Civil Order Refund Section End
+# ==================================================
 
 
 

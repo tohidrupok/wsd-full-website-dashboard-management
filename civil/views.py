@@ -56,4 +56,23 @@ class CivilMobilePaymentViewSet(viewsets.ModelViewSet):
 
 
 
+# ==================================================
+# Civil Order Refund Views Section Start
+# ==================================================
+class CivilRefundViewSet(viewsets.ModelViewSet):
+    queryset = Civil_Refund.objects.all()
+    serializer_class = CivilRefundSerializer
+
+class CivilBankRefundViewSet(viewsets.ModelViewSet):
+    queryset = Civil_Bank_Refund.objects.all()
+    serializer_class = CivilBankRefundSerializer
+
+class CivilMobileRefundViewSet(viewsets.ModelViewSet):
+    queryset = Civil_Mobile_Refund.objects.all()
+    serializer_class = CivilMobileRefundSerializer
+# ==================================================
+# Civil Order Refund Views Section End
+# ==================================================
+
+
 

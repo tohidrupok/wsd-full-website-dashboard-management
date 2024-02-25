@@ -21,6 +21,16 @@ order_router.register(r'it_mobile_payments', ITMobilePaymentViewSet)
 # IT Order Payment urls Section End
 # ==================================================
 
+# ==================================================
+# IT Order Refund Models Section Start
+# ==================================================
+order_router.register(r'it-refunds', ITRefundViewSet)
+order_router.register(r'it-bank-refunds', ITBankRefundViewSet)
+order_router.register(r'it-mobile-refunds', ITMobileRefundViewSet)
+# ==================================================
+# IT Order Refund Models Section End
+# ==================================================
+
 urlpatterns = [
     path('order/', include(order_router.urls)),
 ]

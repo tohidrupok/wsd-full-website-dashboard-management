@@ -168,6 +168,9 @@ class IT_Payment(models.Model):
     bank = models.ForeignKey(IT_Bank, on_delete=models.DO_NOTHING, related_name='it_bank')
     mobile_wallet = models.ForeignKey(IT_MobileWallet, on_delete=models.DO_NOTHING, related_name='it_mobile_wallet')
     
+    created_date = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+    update_date = models.DateTimeField(auto_now=True, blank=True, null=True)
+    
     def __str__(self) -> str:
         return f'{self.order.project_name} - {self.pk}'
 
@@ -188,8 +191,7 @@ class IT_BankPayment(models.Model):
     
     def __str__(self) -> str:
         return f'{self.payment.order.project_name} - {self.pk}'
-    
-    
+
 
 class IT_MobilePayment(models.Model):
     payment = models.OneToOneField(IT_Payment, on_delete=models.CASCADE, related_name='mobile_payment')
@@ -206,10 +208,67 @@ class IT_MobilePayment(models.Model):
     
     def __str__(self) -> str:
         return f'{self.payment.order.project_name} - {self.pk}'
+
 # ==================================================
 # IT Order Payment Models Section End
 # ==================================================
 
 
+
+# ==================================================
+# IT Order Refund Models Section Start
+# ==================================================
+class IT_Refund(models.Model):
+    order = models.ForeignKey(IT_Order, on_delete=models.DO_NOTHING, blank=True, null=True)
+    payment = models.OneToOneField(IT_Payment, on_delete=models.CASCADE)
+    reason = models.TextField()
+    proof_of_payment = models.FileField(upload_to='it/image/refund_proofs/')
+    
+    email = models.EmailField()
+    phone_number = models.CharField(max_length=20)
+    
+    preferred_contact_method = models.CharField(max_length=20, blank=True, null=True)
+    additional_notes = models.TextField(blank=True, null=True)
+    special_instructions = models.TextField(blank=True, null=True)
+    feedback_or_suggestions = models.TextField(blank=True, null=True)
+    documentation_or_evidence = models.FileField(upload_to='it/image/refund_documents/', blank=True, null=True)
+    specific_issue_details = models.TextField(blank=True, null=True)
+    additional_comments = models.TextField(blank=True, null=True)
+    
+    created_date = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+    update_date = models.DateTimeField(auto_now=True, blank=True, null=True)
+    
+    def __str__(self) -> str:
+        return f'{self.order.pk} | {self.payment.pk} | {self.email}'
+
+class IT_Bank_Refund(models.Model):
+    refund = models.OneToOneField(IT_Refund, on_delete=models.CASCADE)
+    currency = models.CharField(max_length=10)
+    refund_method = models.CharField(max_length=50)
+    recipient_bank_name = models.CharField(max_length=100)
+    recipient_bank_account_name = models.CharField(max_length=100)
+    recipient_bank_routing_name = models.CharField(max_length=100)
+    iban_code = models.CharField(max_length=100)
+    account_info = models.TextField()
+    additional_info = models.TextField()
+    
+    def __str__(self) -> str:
+        return f'{self.refund.pk} | {self.recipient_bank_name}'
+
+class IT_Mobile_Refund(models.Model):
+    refund = models.OneToOneField(IT_Refund, on_delete=models.CASCADE)
+    currency = models.CharField(max_length=10)
+    refund_method = models.CharField(max_length=50)
+    recipient_mobile_wallet_name = models.CharField(max_length=100)
+    recipient_wallet_account_name = models.CharField(max_length=100)
+    account_info = models.TextField()
+    additional_info = models.TextField()
+    
+    def __str__(self) -> str:
+        return f'{self.refund.pk} | {self.recipient_mobile_wallet_name}'
+
+# ==================================================
+# IT Order Refund Models Section End
+# ==================================================
 
 

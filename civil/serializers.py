@@ -64,3 +64,26 @@ class CivilMobilePaymentSerializer(serializers.ModelSerializer):
 # Civil Order Payment Section End
 # ==================================================
 
+
+# ==================================================
+# Civil Order Refund serializers Section Start
+# ==================================================
+class CivilRefundSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Civil_Refund
+        fields = '__all__'
+
+class CivilBankRefundSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Civil_Bank_Refund
+        fields = '__all__'
+
+class CivilMobileRefundSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Civil_Mobile_Refund
+        fields = '__all__'
+# ==================================================
+# Civil Order Refund serializers Section End
+# ==================================================
+
+

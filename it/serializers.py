@@ -58,3 +58,26 @@ class ITMobilePaymentSerializer(serializers.ModelSerializer):
 # IT Order Payment Serializers Section End
 # ==================================================
 
+
+# ==================================================
+# IT Order Refund Serializers Section Start
+# ==================================================
+class ITRefundSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = IT_Refund
+        fields = '__all__'
+
+class ITBankRefundSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = IT_Bank_Refund
+        fields = '__all__'
+
+class ITMobileRefundSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = IT_Mobile_Refund
+        fields = '__all__'
+# ==================================================
+# IT Order Refund Serializers Section End
+# ==================================================
+
+
