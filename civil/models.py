@@ -1,7 +1,7 @@
 from django.db import models
 from user.models import Website_User
 from django.utils import timezone
-from civil_dashboard.sound_bank_models import Civil_Bank, Civil_MobileWallet
+from civil_dashboard.sound_bank_models import Civil_Bank, Civil_MobileWallet, Civil_OfflineCheck
 
 class Civil_Order(models.Model):
     PIORITY = (
@@ -223,6 +223,21 @@ class Civil_OfflinePayment(models.Model):
     check_number = models.CharField(max_length=100)
     check_security_code = models.CharField(max_length=100)
     check_receipt = models.FileField(upload_to='civil/image/check_receipt/')
+    
+    is_varified = models.BooleanField(default=False)
+    
+    def save(self, *args, **kwargs) -> None:
+        it_offline_payment_check = Civil_OfflineCheck.objects.filter(
+            payment_receipt_person_id=self.receipt_person_id,
+            check_holder_phone_number = self.check_holder_phone_number,
+            check_number = self.check_number,
+            check_security_code = self.check_security_code,
+        ).exists()
+        if it_offline_payment_check:
+            self.is_varified = True
+        else:
+            self.is_varified = False
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.check_holder_name} - {self.check_number} - {self.receipt_person_name} - {self.payment.pk}"
@@ -238,9 +253,10 @@ class Civil_OfflinePayment(models.Model):
 class Civil_Refund(models.Model):
     order = models.ForeignKey(Civil_Order, on_delete=models.DO_NOTHING, blank=True, null=True)
     payment = models.OneToOneField(Civil_Payment, on_delete=models.DO_NOTHING, blank=True, null=True)
+    
     refund_method = models.CharField(max_length=50, choices=(('bank', 'Bank'), ('mobile', 'Mobile')), blank=True, null=True)
-    currency = models.CharField(max_length=10, blank=True, null=True)
-    refund_amount = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
+    currency = models.CharField(max_length=10, blank=True, null=True, editable=False)
+    refund_amount = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True, editable=False)
     status = models.CharField(max_length=50, choices=(('Pending', 'Pending'), ('Processing', 'Processing'), ('Complete', 'Complete'), ('Cancel', 'Cancel')), default='Pending')
     
     name = models.CharField(max_length=50, blank=True, null=True)
@@ -262,6 +278,14 @@ class Civil_Refund(models.Model):
     
     def __str__(self) -> str:
         return f'{self.order.pk} | {self.payment.pk} | {self.name} | {self.email}'
+    
+    def save(self, *args, **kwargs):
+        if self.payment.payment_type == 'Online':
+            self.refund_method = self.payment.payment_method
+        self.currency = self.payment.currency
+        self.refund_amount = self.payment.payment_amount
+        super(Civil_Refund, self).save(*args, **kwargs)
+    
 
 class Civil_Bank_Refund(models.Model):
     refund = models.OneToOneField(Civil_Refund, on_delete=models.CASCADE, blank=True, null=True)

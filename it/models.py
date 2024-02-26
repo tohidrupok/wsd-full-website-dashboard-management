@@ -1,7 +1,7 @@
 from django.db import models
 from user.models import Website_User
 from django.utils import timezone
-from it_dashboard.sound_bank_models import IT_Bank, IT_MobileWallet
+from it_dashboard.sound_bank_models import IT_Bank, IT_MobileWallet, IT_OfflineCheck
 
 class IT_Order(models.Model):
     PIORITY = (
@@ -223,6 +223,21 @@ class IT_OfflinePayment(models.Model):
     check_number = models.CharField(max_length=100)
     check_security_code = models.CharField(max_length=100)
     check_receipt = models.FileField(upload_to='it/image/check_receipt/')
+    
+    is_varified = models.BooleanField(default=False)
+    
+    def save(self, *args, **kwargs) -> None:
+        it_offline_payment_check = IT_OfflineCheck.objects.filter(
+            payment_receipt_person_id=self.receipt_person_id,
+            check_holder_phone_number = self.check_holder_phone_number,
+            check_number = self.check_number,
+            check_security_code = self.check_security_code,
+        ).exists()
+        if it_offline_payment_check:
+            self.is_varified = True
+        else:
+            self.is_varified = False
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.check_holder_name} - {self.check_number} - {self.receipt_person_name} - {self.payment.pk}"
@@ -263,6 +278,14 @@ class IT_Refund(models.Model):
     
     def __str__(self) -> str:
         return f'{self.order.pk} | {self.payment.pk} | {self.name} | {self.email}'
+    
+    def save(self, *args, **kwargs):
+        if self.payment.payment_type == 'Online':
+            self.refund_method = self.payment.payment_method
+        self.currency = self.payment.currency
+        self.refund_amount = self.payment.payment_amount
+        super(IT_Refund, self).save(*args, **kwargs)
+
 
 class IT_Bank_Refund(models.Model):
     refund = models.OneToOneField(IT_Refund, on_delete=models.CASCADE)
