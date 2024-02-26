@@ -57,8 +57,9 @@ sound_router.register(r'user-order-sound', CivilUserOrderSoundAPI, basename='civ
 # Payment Method Urls Router For Whole Website Start
 # ==================================================
 payment_method_router = DefaultRouter()
-payment_method_router.register(r'banks', CivilBankViewSet, basename='civil-bank')
-payment_method_router.register(r'mobile-wallets', CivilMobileWalletViewSet, basename='civil-mobile-wallet')
+payment_method_router.register(r'civil-banks', CivilBankViewSet, basename='civil-bank')
+payment_method_router.register(r'civil-mobile-wallets', CivilMobileWalletViewSet, basename='civil-mobile-wallet')
+payment_method_router.register(r'civil-offline-checks', CivilOfflineCheckViewSet, basename='civil-offline-checks')
 # ==================================================
 # Payment Method Urls Router For Whole Website End
 # ==================================================

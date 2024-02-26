@@ -60,6 +60,11 @@ class CivilMobilePaymentSerializer(serializers.ModelSerializer):
         model = Civil_MobilePayment
         fields = '__all__'
 
+class CivilOfflinePaymentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Civil_OfflinePayment
+        fields = '__all__'
+
 # ==================================================
 # Civil Order Payment Section End
 # ==================================================

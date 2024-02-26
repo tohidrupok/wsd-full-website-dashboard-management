@@ -61,8 +61,9 @@ sound_router.register(r'user-order-sound', ITUserOrderSoundAPI, basename='it-use
 # Payment Method Urls Router For Whole Website Start
 # ==================================================
 payment_method_router = DefaultRouter()
-payment_method_router.register(r'banks', ITBankViewSet, basename='it-bank')
-payment_method_router.register(r'mobile-wallets', ITMobileWalletViewSet, basename='it-mobile-wallet')
+payment_method_router.register(r'it-banks', ITBankViewSet, basename='it-bank')
+payment_method_router.register(r'it-mobile-wallets', ITMobileWalletViewSet, basename='it-mobile-wallet')
+payment_method_router.register(r'it_offline_checks', ITOfflineCheckViewSet, basename='it-offline-checks')
 # ==================================================
 # Payment Method Urls Router For Whole Website End
 # ==================================================

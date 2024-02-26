@@ -15,6 +15,11 @@ class CivilMobileWalletSerializerit(serializers.ModelSerializer):
         model = Civil_MobileWallet
         fields = '__all__'
 
+class CivilOfflineCheckSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Civil_OfflineCheck
+        fields = '__all__'
+
 # ==================================================
 # Payment Method Serializers For Whole Website End
 # ==================================================

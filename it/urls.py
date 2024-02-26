@@ -14,9 +14,11 @@ order_router.register(r'it_order_products', IT_Order_Product_API, basename='it_o
 # ==================================================
 # IT Order Payment urls Section Start
 # ==================================================
-order_router.register(r'it_payments', ITPaymentViewSet)
-order_router.register(r'it_bank_payments', ITBankPaymentViewSet)
-order_router.register(r'it_mobile_payments', ITMobilePaymentViewSet)
+payment_router = DefaultRouter()
+payment_router.register(r'it_payments', ITPaymentViewSet)
+payment_router.register(r'it_bank_payments', ITBankPaymentViewSet)
+payment_router.register(r'it_mobile_payments', ITMobilePaymentViewSet)
+payment_router.register(r'it_offline_payments', ITOfflinePaymentViewSet, basename='it_offline_payment')
 # ==================================================
 # IT Order Payment urls Section End
 # ==================================================
@@ -24,13 +26,16 @@ order_router.register(r'it_mobile_payments', ITMobilePaymentViewSet)
 # ==================================================
 # IT Order Refund Models Section Start
 # ==================================================
-order_router.register(r'it-refunds', ITRefundViewSet)
-order_router.register(r'it-bank-refunds', ITBankRefundViewSet)
-order_router.register(r'it-mobile-refunds', ITMobileRefundViewSet)
+refund_router = DefaultRouter()
+refund_router.register(r'it-refunds', ITRefundViewSet)
+refund_router.register(r'it-bank-refunds', ITBankRefundViewSet)
+refund_router.register(r'it-mobile-refunds', ITMobileRefundViewSet)
 # ==================================================
 # IT Order Refund Models Section End
 # ==================================================
 
 urlpatterns = [
     path('order/', include(order_router.urls)),
+    path('payment/', include(payment_router.urls)),
+    path('refund/', include(refund_router.urls)),
 ]

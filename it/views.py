@@ -48,6 +48,11 @@ class ITBankPaymentViewSet(viewsets.ModelViewSet):
 class ITMobilePaymentViewSet(viewsets.ModelViewSet):
     queryset = IT_MobilePayment.objects.all()
     serializer_class = ITMobilePaymentSerializer
+
+class ITOfflinePaymentViewSet(viewsets.ModelViewSet):
+    queryset = IT_OfflinePayment.objects.all()
+    serializer_class = ITOfflinePaymentSerializer
+
 # ==================================================
 # IT Order Payment Views Section End
 # ==================================================

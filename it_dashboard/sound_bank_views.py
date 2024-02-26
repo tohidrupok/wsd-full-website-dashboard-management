@@ -15,6 +15,10 @@ class ITMobileWalletViewSet(viewsets.ModelViewSet):
     queryset = IT_MobileWallet.objects.all()
     serializer_class = ITMobileWalletSerializerit
 
+class ITOfflineCheckViewSet(viewsets.ModelViewSet):
+    queryset = IT_OfflineCheck.objects.all()
+    serializer_class = ITOfflineCheckSerializer
+
 # ==================================================
 # Payment Method Views For Whole Website End
 # ==================================================

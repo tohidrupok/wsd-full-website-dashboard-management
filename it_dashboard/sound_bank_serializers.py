@@ -15,6 +15,11 @@ class ITMobileWalletSerializerit(serializers.ModelSerializer):
         model = IT_MobileWallet
         fields = '__all__'
 
+class ITOfflineCheckSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = IT_OfflineCheck
+        fields = '__all__'
+
 # ==================================================
 # Payment Method Serializers For Whole Website End
 # ==================================================

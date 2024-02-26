@@ -54,6 +54,12 @@ class ITMobilePaymentSerializer(serializers.ModelSerializer):
     class Meta:
         model = IT_MobilePayment
         fields = '__all__'
+
+class ITOfflinePaymentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = IT_OfflinePayment
+        fields = '__all__'
+
 # ==================================================
 # IT Order Payment Serializers Section End
 # ==================================================

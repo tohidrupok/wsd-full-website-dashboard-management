@@ -14,9 +14,11 @@ order_router.register(r'civil_order_products', Civil_Order_Product_API, basename
 # ==================================================
 # Civil Order Payment urls Section Start
 # ==================================================
-order_router.register(r'civil_payments', CivilPaymentViewSet)
-order_router.register(r'civil_bank_payments', CivilBankPaymentViewSet)
-order_router.register(r'civil_mobile_payments', CivilMobilePaymentViewSet)
+payment_router = DefaultRouter()
+payment_router.register(r'civil-payments', CivilPaymentViewSet)
+payment_router.register(r'civil-bank-payments', CivilBankPaymentViewSet)
+payment_router.register(r'civil-mobile-payments', CivilMobilePaymentViewSet)
+payment_router.register(r'civil-offline-payments', CivilOfflinePaymentViewSet, basename='civil-offline-payments')
 # ==================================================
 # Civil Order Payment urls Section End
 # ==================================================
@@ -25,13 +27,18 @@ order_router.register(r'civil_mobile_payments', CivilMobilePaymentViewSet)
 # ==================================================
 # Civil Order Refund urls Section Start
 # ==================================================
-order_router.register(r'civil-refunds', CivilRefundViewSet)
-order_router.register(r'civil-bank-refunds', CivilBankRefundViewSet)
-order_router.register(r'civil-mobile-refunds', CivilMobileRefundViewSet)
+refund_router = DefaultRouter()
+refund_router.register(r'civil-refunds', CivilRefundViewSet)
+refund_router.register(r'civil-bank-refunds', CivilBankRefundViewSet)
+refund_router.register(r'civil-mobile-refunds', CivilMobileRefundViewSet)
 # ==================================================
 # Civil Order Refund urls Section End
 # ==================================================
 
 urlpatterns = [
     path('order/', include(order_router.urls)),
+    path('payment/', include(payment_router.urls)),
+    path('refund/', include(refund_router.urls)),
 ]
+
+

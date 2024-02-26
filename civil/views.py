@@ -50,6 +50,10 @@ class CivilMobilePaymentViewSet(viewsets.ModelViewSet):
     queryset = Civil_MobilePayment.objects.all()
     serializer_class = CivilMobilePaymentSerializer
 
+class CivilOfflinePaymentViewSet(viewsets.ModelViewSet):
+    queryset = Civil_OfflinePayment.objects.all()
+    serializer_class = CivilOfflinePaymentSerializer
+
 # ==================================================
 # Civil Order Payment Views Section End
 # ==================================================

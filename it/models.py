@@ -160,13 +160,15 @@ class IT_Order_Product(models.Model):
 class IT_Payment(models.Model):
     order = models.ForeignKey(IT_Order, on_delete=models.CASCADE, related_name='it_order_payment')
     
-    currency = models.CharField(max_length=3, choices=(('USD', 'USD'), ('BDT', 'BDT')))
+    currency = models.CharField(max_length=3, choices=(('USD', 'USD'), ('BDT', 'BDT')), default='USD')
     payment_amount = models.DecimalField(max_digits=12, decimal_places=2)
     payment_type = models.CharField(max_length=10, choices=(('Online', 'Online'), ('Offline', 'Offline')))
     payment_method = models.CharField(max_length=10, choices=(('bank', 'Bank'), ('mobile', 'Mobile')))
     
     bank = models.ForeignKey(IT_Bank, on_delete=models.DO_NOTHING, related_name='it_bank')
     mobile_wallet = models.ForeignKey(IT_MobileWallet, on_delete=models.DO_NOTHING, related_name='it_mobile_wallet')
+    
+    status = models.BooleanField(default=True)
     
     created_date = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     update_date = models.DateTimeField(auto_now=True, blank=True, null=True)
@@ -192,7 +194,6 @@ class IT_BankPayment(models.Model):
     def __str__(self) -> str:
         return f'{self.payment.order.project_name} - {self.pk}'
 
-
 class IT_MobilePayment(models.Model):
     payment = models.OneToOneField(IT_Payment, on_delete=models.CASCADE, related_name='mobile_payment')
     
@@ -209,6 +210,23 @@ class IT_MobilePayment(models.Model):
     def __str__(self) -> str:
         return f'{self.payment.order.project_name} - {self.pk}'
 
+class IT_OfflinePayment(models.Model):
+    payment = models.OneToOneField(IT_Payment, on_delete=models.CASCADE, related_name='offline_payment')
+    
+    country_name = models.CharField(max_length=100)
+    receipt_person_name = models.CharField(max_length=100)
+    receipt_person_id = models.CharField(max_length=100)
+    
+    check_holder_name = models.CharField(max_length=100)
+    check_holder_gmail = models.EmailField()
+    check_holder_phone_number = models.CharField(max_length=14)
+    check_number = models.CharField(max_length=100)
+    check_security_code = models.CharField(max_length=100)
+    check_receipt = models.FileField(upload_to='it/image/check_receipt/')
+
+    def __str__(self):
+        return f"{self.check_holder_name} - {self.check_number} - {self.receipt_person_name} - {self.payment.pk}"
+
 # ==================================================
 # IT Order Payment Models Section End
 # ==================================================
@@ -220,14 +238,19 @@ class IT_MobilePayment(models.Model):
 # ==================================================
 class IT_Refund(models.Model):
     order = models.ForeignKey(IT_Order, on_delete=models.DO_NOTHING, blank=True, null=True)
-    payment = models.OneToOneField(IT_Payment, on_delete=models.CASCADE)
-    reason = models.TextField()
-    proof_of_payment = models.FileField(upload_to='it/image/refund_proofs/')
+    payment = models.OneToOneField(IT_Payment, on_delete=models.DO_NOTHING, blank=True, null=True)
+    refund_method = models.CharField(max_length=50, choices=(('bank', 'Bank'), ('mobile', 'Mobile')), blank=True, null=True)
+    currency = models.CharField(max_length=10, blank=True, null=True)
+    refund_amount = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
+    status = models.CharField(max_length=50, choices=(('Pending', 'Pending'), ('Processing', 'Processing'), ('Complete', 'Complete'), ('Cancel', 'Cancel')), default='Pending')
     
-    email = models.EmailField()
-    phone_number = models.CharField(max_length=20)
-    
+    name = models.CharField(max_length=50, blank=True, null=True)
+    email = models.EmailField(blank=True, null=True)
+    phone_number = models.CharField(max_length=20, blank=True, null=True)
     preferred_contact_method = models.CharField(max_length=20, blank=True, null=True)
+    
+    reason_for_refund = models.TextField()
+    proof_of_payment = models.FileField(upload_to='it/image/refund_proofs/')
     additional_notes = models.TextField(blank=True, null=True)
     special_instructions = models.TextField(blank=True, null=True)
     feedback_or_suggestions = models.TextField(blank=True, null=True)
@@ -239,33 +262,33 @@ class IT_Refund(models.Model):
     update_date = models.DateTimeField(auto_now=True, blank=True, null=True)
     
     def __str__(self) -> str:
-        return f'{self.order.pk} | {self.payment.pk} | {self.email}'
+        return f'{self.order.pk} | {self.payment.pk} | {self.name} | {self.email}'
 
 class IT_Bank_Refund(models.Model):
     refund = models.OneToOneField(IT_Refund, on_delete=models.CASCADE)
-    currency = models.CharField(max_length=10)
-    refund_method = models.CharField(max_length=50)
-    recipient_bank_name = models.CharField(max_length=100)
-    recipient_bank_account_name = models.CharField(max_length=100)
-    recipient_bank_routing_name = models.CharField(max_length=100)
-    iban_code = models.CharField(max_length=100)
-    account_info = models.TextField()
-    additional_info = models.TextField()
+    
+    recipient_bank_name = models.CharField(max_length=100, blank=True, null=True)
+    recipient_bank_account_name = models.CharField(max_length=100, blank=True, null=True)
+    recipient_bank_account_number = models.CharField(max_length=100, blank=True, null=True)
+    recipient_bank_routing_name = models.CharField(max_length=100, blank=True, null=True)
+    iban_or_swift_code = models.CharField(max_length=100, blank=True, null=True)
+    account_info = models.TextField(blank=True, null=True)
+    additional_info = models.TextField(blank=True, null=True)
     
     def __str__(self) -> str:
-        return f'{self.refund.pk} | {self.recipient_bank_name}'
+        return f'{self.refund.pk} | {self.recipient_bank_name} | {self.recipient_bank_account_name} | {self.recipient_bank_account_number}'
 
 class IT_Mobile_Refund(models.Model):
     refund = models.OneToOneField(IT_Refund, on_delete=models.CASCADE)
-    currency = models.CharField(max_length=10)
-    refund_method = models.CharField(max_length=50)
-    recipient_mobile_wallet_name = models.CharField(max_length=100)
-    recipient_wallet_account_name = models.CharField(max_length=100)
-    account_info = models.TextField()
-    additional_info = models.TextField()
+    
+    recipient_mobile_wallet_name = models.CharField(max_length=100, blank=True, null=True)
+    recipient_wallet_account_name = models.CharField(max_length=100, blank=True, null=True)
+    recipient_wallet_account_number = models.CharField(max_length=100, blank=True, null=True)
+    account_info = models.TextField(blank=True, null=True)
+    additional_info = models.TextField(blank=True, null=True)
     
     def __str__(self) -> str:
-        return f'{self.refund.pk} | {self.recipient_mobile_wallet_name}'
+        return f'{self.refund.pk} | {self.recipient_mobile_wallet_name} | {self.recipient_wallet_account_name} | {self.recipient_wallet_account_number}'
 
 # ==================================================
 # IT Order Refund Models Section End

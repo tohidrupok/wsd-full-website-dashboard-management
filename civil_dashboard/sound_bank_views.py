@@ -15,6 +15,10 @@ class CivilMobileWalletViewSet(viewsets.ModelViewSet):
     queryset = Civil_MobileWallet.objects.all()
     serializer_class = CivilMobileWalletSerializerit
 
+class CivilOfflineCheckViewSet(viewsets.ModelViewSet):
+    queryset = Civil_OfflineCheck.objects.all()
+    serializer_class = CivilOfflineCheckSerializer
+
 # ==================================================
 # Payment Method Views For Whole Website End
 # ==================================================
