@@ -2,6 +2,8 @@ from django.db import models
 from user.models import Website_User
 from django.utils import timezone
 from civil_dashboard.sound_bank_models import Civil_Bank, Civil_MobileWallet, Civil_OfflineCheck
+from django.dispatch import receiver
+from django.db.models.signals import post_save
 
 class Civil_Order(models.Model):
     PIORITY = (
@@ -110,24 +112,23 @@ class Civil_Order_Update_Box(models.Model):
 
 class Civil_Order_User_Information(models.Model):
     order = models.OneToOneField(Civil_Order, on_delete=models.CASCADE, related_name='civil_order_user_information')
-    name = models.CharField(max_length=255)
-    date_of_birth = models.DateField()
-    gender = models.CharField(max_length=10)
-    nationality = models.CharField(max_length=255)
-    phone_number = models.CharField(max_length=15)
-    email_address = models.EmailField()
-    home_address = models.TextField()
-    educational_qualifications = models.TextField()
-    professional_details = models.TextField()
-    occupation = models.CharField(max_length=255)
-    work_experience = models.IntegerField()
-    skills = models.TextField()
-    interests = models.TextField()
-    hobbies = models.TextField()
+    name = models.CharField(max_length=255, blank=True, null=True)
+    date_of_birth = models.DateField(blank=True, null=True)
+    gender = models.CharField(max_length=10, blank=True, null=True)
+    nationality = models.CharField(max_length=255, blank=True, null=True)
+    phone_number = models.CharField(max_length=15, blank=True, null=True)
+    email_address = models.EmailField(blank=True, null=True)
+    home_address = models.TextField(blank=True, null=True)
+    educational_qualifications = models.TextField(blank=True, null=True)
+    professional_details = models.TextField(blank=True, null=True)
+    occupation = models.CharField(max_length=255, blank=True, null=True)
+    work_experience = models.IntegerField(blank=True, null=True)
+    skills = models.TextField(blank=True, null=True)
+    interests = models.TextField(blank=True, null=True)
+    hobbies = models.TextField(blank=True, null=True)
 
-    profile_id = models.CharField(max_length=50)
-    application_date = models.DateField()
-    payment_currency = models.CharField(max_length=10)
+    profile_id = models.CharField(max_length=50, blank=True, null=True)
+    application_date = models.DateField(auto_now_add=True)
     user_photo = models.ImageField(upload_to='civil/order/user/', blank=True, null=True)
 
     user_signature = models.ImageField(upload_to='civil/order/user/signature/', blank=True, null=True)
@@ -135,6 +136,14 @@ class Civil_Order_User_Information(models.Model):
 
     def __str__(self):
         return self.name
+    
+    def save(self, *args, **kwargs):
+        self.name = self.order.user.full_name
+        self.email_address = self.order.user.email
+        self.gender = self.order.user.gender
+        self.nationality = self.order.user.country
+        self.profile_id = self.order.user
+        super(Civil_Order_User_Information, self).save(*args, **kwargs)
 
 
 class Civil_Order_Product(models.Model):
@@ -155,7 +164,7 @@ class Civil_Order_Product(models.Model):
 # Civil Order Payment Section Start
 # ==================================================
 class Civil_Payment(models.Model):
-    order = models.ForeignKey(Civil_Order, on_delete=models.DO_NOTHING, related_name='civil_order_payment', blank=True, null=True)
+    order = models.ForeignKey(Civil_Order, on_delete=models.DO_NOTHING, related_name='civil_order_payment', blank=True, null=True, editable=False)
     
     currency = models.CharField(max_length=3, choices=(('USD', 'USD'), ('BDT', 'BDT')), default='USD')
     payment_amount = models.DecimalField(max_digits=12, decimal_places=2)
@@ -164,8 +173,8 @@ class Civil_Payment(models.Model):
     is_varified = models.BooleanField(default=True)
     is_refund = models.BooleanField(default=True)
     
-    bank = models.ForeignKey(Civil_Bank, on_delete=models.DO_NOTHING, related_name='civil_bank')
-    mobile_wallet = models.ForeignKey(Civil_MobileWallet, on_delete=models.DO_NOTHING, related_name='civil_mobile_wallet')
+    bank = models.ForeignKey(Civil_Bank, on_delete=models.DO_NOTHING, related_name='civil_bank', blank=True, null=True)
+    mobile_wallet = models.ForeignKey(Civil_MobileWallet, on_delete=models.DO_NOTHING, related_name='civil_mobile_wallet', blank=True, null=True)
     
     status = models.BooleanField(default=True)
     
@@ -242,6 +251,13 @@ class Civil_OfflinePayment(models.Model):
     def __str__(self):
         return f"{self.check_holder_name} - {self.check_number} - {self.receipt_person_name} - {self.payment.pk}"
 
+
+@receiver(post_save, sender=Civil_Payment)
+def create_payment_model(sender, instance, created, **kwargs):
+    if created:
+        # UserProfile.objects.create(user=instance)
+        # User_Authentication_Model.objects.create(user=instance)
+        pass
 # ==================================================
 # Civil Order Payment Section End
 # ==================================================
