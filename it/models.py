@@ -1,3 +1,4 @@
+from typing import Iterable
 from django.db import models
 from user.models import Website_User
 from django.utils import timezone
@@ -164,20 +165,36 @@ class IT_Order_Product(models.Model):
 # IT Order Payment Models Section Start
 # ==================================================
 class IT_Payment(models.Model):
-    order = models.ForeignKey(IT_Order, on_delete=models.CASCADE, related_name='it_order_payment')
+    order = models.ForeignKey(IT_Order, on_delete=models.CASCADE, related_name='it_order_payment', blank=True, null=True, editable=False)
     
-    currency = models.CharField(max_length=3, choices=(('USD', 'USD'), ('BDT', 'BDT')), default='USD')
+    currency = models.CharField(max_length=3, choices=(('USD', 'USD'), ('BDT', 'BDT')), blank=True, null=True)
     payment_amount = models.DecimalField(max_digits=12, decimal_places=2)
-    payment_type = models.CharField(max_length=10, choices=(('Online', 'Online'), ('Offline', 'Offline')))
-    payment_method = models.CharField(max_length=10, choices=(('bank', 'Bank'), ('mobile', 'Mobile')))
+    payment_type = models.CharField(max_length=10, choices=(('Online', 'Online'), ('Offline', 'Offline')), blank=True, null=True)
+    payment_method = models.CharField(max_length=10, choices=(('bank', 'Bank'), ('mobile', 'Mobile')), blank=True, null=True)
+    is_varified = models.BooleanField(default=False)
+    is_refund = models.BooleanField(default=False)
     
-    bank = models.ForeignKey(IT_Bank, on_delete=models.DO_NOTHING, related_name='it_bank')
-    mobile_wallet = models.ForeignKey(IT_MobileWallet, on_delete=models.DO_NOTHING, related_name='it_mobile_wallet')
+    bank = models.ForeignKey(IT_Bank, on_delete=models.DO_NOTHING, related_name='it_bank', blank=True, null=True)
+    mobile_wallet = models.ForeignKey(IT_MobileWallet, on_delete=models.DO_NOTHING, related_name='it_mobile_wallet', blank=True, null=True)
     
-    status = models.BooleanField(default=True)
+    status = models.BooleanField(default=False)
     
     created_date = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     update_date = models.DateTimeField(auto_now=True, blank=True, null=True)
+    
+    def save(self, *args, **kwargs) -> None:
+        if self.order.currency:
+            self.currency = self.order.currency
+        
+        if self.status == True:
+            payment_order = self.order
+            if self.payment_type == 'Online':
+                payment_order.total_online_deposite += self.payment_amount
+            elif self.payment_type == 'Offline':
+                payment_order.total_offline_deposite += self.payment_amount
+            payment_order.save()
+        
+        super(IT_Payment, self).save(*args, **kwargs)
     
     def __str__(self) -> str:
         return f'{self.order.project_name} - {self.pk}'
@@ -192,7 +209,7 @@ class IT_BankPayment(models.Model):
     bank_name = models.CharField(max_length=100, blank=False)
     account_number = models.CharField(max_length=50)
     account_info = models.TextField( blank=True)
-    transaction_id = models.CharField(max_length=100,unique=True)
+    transaction_id = models.CharField(max_length=100,unique=True, blank=True, null=True)
     transaction_receipt = models.ImageField(upload_to='it/image/transaction_receipts/')
     additional_info = models.TextField(blank=True)
     agree = models.BooleanField()
@@ -290,6 +307,20 @@ class IT_Refund(models.Model):
             self.refund_method = self.payment.payment_method
         self.currency = self.payment.currency
         self.refund_amount = self.payment.payment_amount
+        
+        if self.status == 'Complete':
+            refund_payment = self.payment
+            refund_payment.is_refund = True
+            refund_payment.status = False
+            refund_payment.save()
+            
+            refund_payment_order = refund_payment.order
+            if refund_payment.payment_type == 'Online':
+                refund_payment_order.total_online_deposite -= refund_payment.payment_amount
+            elif refund_payment.payment_type == 'Offline':
+                refund_payment_order.total_offline_deposite -= refund_payment.payment_amount
+            refund_payment_order.save()
+        
         super(IT_Refund, self).save(*args, **kwargs)
 
 

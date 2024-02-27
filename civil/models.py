@@ -166,20 +166,34 @@ class Civil_Order_Product(models.Model):
 class Civil_Payment(models.Model):
     order = models.ForeignKey(Civil_Order, on_delete=models.DO_NOTHING, related_name='civil_order_payment', blank=True, null=True, editable=False)
     
-    currency = models.CharField(max_length=3, choices=(('USD', 'USD'), ('BDT', 'BDT')), default='USD')
+    currency = models.CharField(max_length=3, choices=(('USD', 'USD'), ('BDT', 'BDT')), blank=True, null=True)
     payment_amount = models.DecimalField(max_digits=12, decimal_places=2)
     payment_type = models.CharField(max_length=10, choices=(('Online', 'Online'), ('Offline', 'Offline')), blank=True, null=True)
     payment_method = models.CharField(max_length=10, choices=(('bank', 'Bank'), ('mobile', 'Mobile')), blank=True, null=True)
-    is_varified = models.BooleanField(default=True)
-    is_refund = models.BooleanField(default=True)
+    is_varified = models.BooleanField(default=False)
+    is_refund = models.BooleanField(default=False)
     
     bank = models.ForeignKey(Civil_Bank, on_delete=models.DO_NOTHING, related_name='civil_bank', blank=True, null=True)
     mobile_wallet = models.ForeignKey(Civil_MobileWallet, on_delete=models.DO_NOTHING, related_name='civil_mobile_wallet', blank=True, null=True)
     
-    status = models.BooleanField(default=True)
+    status = models.BooleanField(default=False)
     
     created_date = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     update_date = models.DateTimeField(auto_now=True, blank=True, null=True)
+    
+    def save(self, *args, **kwargs) -> None:
+        if self.order.currency:
+            self.currency = self.order.currency
+        
+        if self.status == True:
+            payment_order = self.order
+            if self.payment_type == 'Online':
+                payment_order.total_online_deposite += self.payment_amount
+            elif self.payment_type == 'Offline':
+                payment_order.total_offline_deposite += self.payment_amount
+            payment_order.save()
+        
+        super(Civil_Payment, self).save(*args, **kwargs)
     
     def __str__(self) -> str:
         return f'{self.order.project_name} - {self.pk}'
@@ -300,8 +314,22 @@ class Civil_Refund(models.Model):
             self.refund_method = self.payment.payment_method
         self.currency = self.payment.currency
         self.refund_amount = self.payment.payment_amount
+        
+        if self.status == 'Complete':
+            refund_payment = self.payment
+            refund_payment.is_refund = True
+            refund_payment.status = False
+            refund_payment.save()
+            
+            refund_payment_order = refund_payment.order
+            if refund_payment.payment_type == 'Online':
+                refund_payment_order.total_online_deposite -= refund_payment.payment_amount
+            elif refund_payment.payment_type == 'Offline':
+                refund_payment_order.total_offline_deposite -= refund_payment.payment_amount
+            refund_payment_order.save()
+        
         super(Civil_Refund, self).save(*args, **kwargs)
-    
+
 
 class Civil_Bank_Refund(models.Model):
     refund = models.OneToOneField(Civil_Refund, on_delete=models.CASCADE, blank=True, null=True)
